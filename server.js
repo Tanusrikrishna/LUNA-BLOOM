@@ -14,10 +14,16 @@ connect();
 app.use(express.json());
 
 // Specific CORS for better security (recommended)
-const allowedOrigin=process.env.CLIENT_URL || 'http://localhost:5173';
+const allowedOrigins = [
+  "http://localhost:5173",             // Vite dev
+  process.env.CLIENT_URL               // Vercel URL from Render env
+].filter(Boolean);
+
 app.use(cors({
-  origin: allowedOrigin
+  origin: allowedOrigins,
+  credentials: true
 }));
+
 
 // Serve uploaded images statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
