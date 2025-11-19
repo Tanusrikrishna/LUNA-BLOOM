@@ -15,14 +15,24 @@ app.use(express.json());
 
 // Specific CORS for better security (recommended)
 const allowedOrigins = [
-  "http://localhost:5173",             // Vite dev
-  process.env.CLIENT_URL               // Vercel URL from Render env
-].filter(Boolean);
+  "http://localhost:5173",
+  "https://lunabloomfrontend.vercel.app"
+];
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin);
+        callback(new Error("CORS blocked"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 
 
 // Serve uploaded images statically
